@@ -14,6 +14,10 @@
     "typescript": "^4.6.3"
   },
   "dependencies": {
-    "express": "^4.17.3"
+    "@prisma/client": "^3.12.0",
+    "@types/mysql": "^2.15.21",
+    "express": "^4.17.3",
+    "mysql": "^2.18.1",
+    "prisma": "^3.12.0"
   }
 }

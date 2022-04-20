@@ -1,34 +1,65 @@
 import { Request, Response } from 'express';
-import { User, UserTypes } from '../models/User';
+import User from '../models/User';
+import UserRepository from '../repository/UserRepository';
+import CreateUserService from '../services/CreateUserService';
+import UpdateUserSerice from '../services/UpdateUserService';
 
 const users: User[] = [];
 
 export default class UserController {
-  public create(req: Request, res: Response): Response {
-    const { name, email, password} = req.body;
-    const user = new User(name, email, password,  UserTypes.student)
+  
+  public async create(req: Request, res: Response): Promise<Response> {
+    try {
+      const createUserService = new CreateUserService();
 
-    return res.status(200).json(user);
+      const { name, email, password, userType} = req.body;
+      
+      const user = await createUserService.execute({name, email, password, userType});
+      
+      return res.status(200).json(user);
+    } catch(e) {
+      console.log(e)
+      return res.status(400).json(e);
+    }
   }
 
-  public update(req: Request, res: Response): Response {
-    const { name, email, password} = req.body;
-    const user = new User(name, email, password,  UserTypes.student)
+  public async update(req: Request, res: Response): Promise<Response> {
+    try {
+      const updateUserService = new UpdateUserSerice();
+      const { name, email, password, userType} = req.body;
+      const { id } = req.params
+      
+      const user = await updateUserService.execute(id, {name, email, password, userType})
+      
+      return res.status(200).json(user);
+    }catch (error){
+      return res.status(400).json(error);
+    }
+    }
 
-    return res.status(200).json(user);
+  public async list(req: Request, res: Response): Promise<Response> {
+    try {
+      const userRepository = new UserRepository();
+  
+      const users = await userRepository.getAllUsers();
+  
+      return res.status(200).json(users);
+    } catch (error) {
+      return res.status(400).json(error);
+    } 
   }
 
-  public list(req: Request, res: Response): Response {
-    const { name, email, password} = req.body;
-    const user = new User(name, email, password,  UserTypes.student)
+  public async delete(req: Request, res: Response): Promise<Response> {
+    try {
+      const userRepository = new UserRepository();
+      const { id } = req.params
 
-    return res.status(200).json(users);
-  }
+      await userRepository.deleteUserById(id)
+      return res.status(200);
+    } catch (error) {
+      return res.status(400).json(error);
+    }
 
-  public delete(req: Request, res: Response): Response {
-    const { name, email, password} = req.body;
-    const user = new User(name, email, password,  UserTypes.student)
 
-    return res.status(200).json(user);
   }
 }
