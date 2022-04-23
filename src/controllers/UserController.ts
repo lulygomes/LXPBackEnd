@@ -1,10 +1,8 @@
 import { Request, Response } from 'express';
-import User from '../models/User';
+import { UserTypes } from '../models/enums/UserTypes';
 import UserRepository from '../repository/UserRepository';
 import CreateUserService from '../services/CreateUserService';
 import UpdateUserSerice from '../services/UpdateUserService';
-
-const users: User[] = [];
 
 export default class UserController {
   
@@ -12,13 +10,13 @@ export default class UserController {
     try {
       const createUserService = new CreateUserService();
 
-      const { name, email, password, userType} = req.body;
-      
-      const user = await createUserService.execute({name, email, password, userType});
+      const { name, email, password, userType } = req.body;
+      userType.to
+      userType.toString()
+      const user = await createUserService.execute({name, email, password, userType: userType as UserTypes});
       
       return res.status(200).json(user);
     } catch(e) {
-      console.log(e)
       return res.status(400).json(e);
     }
   }

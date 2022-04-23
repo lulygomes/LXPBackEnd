@@ -1,3 +1,4 @@
+import { UserTypes } from "../models/enums/UserTypes";
 import User from "../models/User";
 import dbConnection from "./dbConnection";
 
@@ -17,17 +18,29 @@ export default class UserRepository {
       data: userData
     })
 
-    return newUser;
+    const userFormated: User = {
+      ...newUser,
+      userType: newUser.userType as UserTypes
+    }
+ 
+    return userFormated;
   }
 
-  public async findUserById(userId: string): Promise<User | null>{
+  public async findUserById(userId: string): Promise<User | null >{
     const user = await dbConnection.user.findUnique({
       where: {
         id: userId,
       }
     })
 
-    return user;
+    if (!user) return null;
+
+    const userFormated: User  = {
+      ...user,
+      userType: user?.userType as UserTypes
+    }
+ 
+    return userFormated;
   }
   public async findUserByEmail(userEmail: string): Promise<User | null>{
     const user = await dbConnection.user.findUnique({
@@ -36,7 +49,14 @@ export default class UserRepository {
       }
     })
 
-    return user;
+    if (!user) return null;
+    
+    const userFormated: User  = {
+      ...user,
+      userType: user?.userType as UserTypes
+    }
+ 
+    return userFormated;
   }
 
   public async updateUserById(userId: string, userData: User): Promise<User>{
@@ -46,8 +66,13 @@ export default class UserRepository {
       },
       data: userData
     })
-
-    return userUpdated
+    
+    const userFormated: User  = {
+      ...userUpdated,
+      userType: userUpdated?.userType as UserTypes
+    }
+ 
+    return userFormated;
   }
 
   public async getAllUsers(): Promise<UserOut[]>{
