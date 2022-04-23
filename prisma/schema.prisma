@@ -16,5 +16,48 @@ model User {
   created_at DateTime @default(now())
   updated_at DateTime @default(now()) @updatedAt()
 
+  courses   Course[]
+  questions Question[]
+  answers   Answer[]
+
   @@map("users")
+}
+
+model Course {
+  id                String   @id @default(uuid())
+  title             String
+  teacherId         String
+  teacher           User     @relation(fields: [teacherId], references: [id])
+  durationInMinutes Int
+  created_at        DateTime @default(now())
+  updated_at        DateTime @updatedAt()
+
+  questions Question[]
+
+  @@map("courses")
+}
+
+model Question {
+  id        String  @id @default(uuid())
+  courseId  String
+  course    Course  @relation(fields: [courseId], references: [id])
+  studentId String  @unique
+  student   User    @relation(fields: [studentId], references: [id])
+  text      String  @db.Text()
+  open      Boolean @default(false)
+
+  ansers Answer[]
+
+  @@map("questions")
+}
+
+model Answer {
+  id         String   @id @default(uuid())
+  text       String   @db.Text()
+  questionId String
+  question   Question @relation(fields: [questionId], references: [id])
+  teacherId  String
+  teacher    User     @relation(fields: [teacherId], references: [id])
+
+  @@map("answers")
 }
