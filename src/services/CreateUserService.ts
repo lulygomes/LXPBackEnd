@@ -1,3 +1,5 @@
+import { hash } from 'bcrypt';
+import AppError from '../errors/AppError';
 import User from "../models/User";
 import UserRepository from "../repository/UserRepository";
 
@@ -6,9 +8,17 @@ export default class CreateUserService {
     const userRepository = new UserRepository();
 
     const userExist = await userRepository.findUserByEmail(email);
-    if(userExist) throw new Error("Falha ao criar o usuário");
+    if(userExist) throw new AppError("Falha ao criar o usuário");
 
-    const user = userRepository.createUser({name, email, password, userType})
+    const passwordHash = await hash(password, 8);
+
+    const user = userRepository.createUser({
+      name, 
+      email, 
+      password: passwordHash, 
+      userType
+    });
+    
     return user;
   }
 }

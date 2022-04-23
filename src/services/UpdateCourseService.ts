@@ -1,3 +1,4 @@
+import AppError from "../errors/AppError";
 import Course from "../models/Course";
 import { UserTypes } from "../models/enums/UserTypes";
 import CourseRepository from "../repository/CourseRepository";
@@ -18,7 +19,7 @@ export default class UpdateCourseService {
     const courseRepository = new CourseRepository();
 
     if(userAuth.userType != UserTypes.Adm && userAuth.userType != UserTypes.Teacher) 
-      throw new Error("Operação não autorizada");
+      throw new AppError("Operação não autorizada", 401);
 
     const courseCreated = await courseRepository.update({id, title, teacherId, durationInMinutes});
     return courseCreated;

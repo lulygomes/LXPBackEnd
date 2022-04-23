@@ -1,3 +1,4 @@
+import AppError from "../errors/AppError";
 import Course from "../models/Course";
 import { UserTypes } from "../models/enums/UserTypes";
 import CourseRepository from "../repository/CourseRepository";
@@ -9,7 +10,7 @@ export default class CreateCourseService {
     const userRepository = new UserRepository();
 
     const teacherExist = await userRepository.findUserById(teacherId)
-    if(!teacherExist || teacherExist.userType != UserTypes.Teacher) throw new Error("Falha ao criar o curso, informe um professor válido");
+    if(!teacherExist || teacherExist.userType != UserTypes.Teacher) throw new AppError("Falha ao criar o curso, informe um professor válido");
 
     const courseCreated = await courseRepository.create({title, teacherId, durationInMinutes});
     return courseCreated;

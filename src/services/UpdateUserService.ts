@@ -1,3 +1,4 @@
+import AppError from "../errors/AppError";
 import User from "../models/User"
 import UserRepository from "../repository/UserRepository";
 
@@ -6,7 +7,7 @@ export default class UpdateUserSerice {
     const userRepository = new UserRepository();
 
     const userExist = await userRepository.findUserById(id);
-    if(!userExist) throw new Error("Falha ao atualizar o usuário");
+    if(!userExist) throw new AppError("Falha ao atualizar o usuário");
 
     const userUpdated = await userRepository.updateUserById(id, {name, email, password, userType});
 
