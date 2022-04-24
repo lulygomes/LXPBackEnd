@@ -92,7 +92,8 @@ export default class UserRepository {
         userType: true,
         created_at: true,
         updated_at: true,
-      }
+        questions: true
+      },
     })
   }
 

@@ -31,7 +31,16 @@ export default class CourseRepository {
   }
 
   public async getAllCourses(): Promise<Course[]>{
-    return await dbConnection.course.findMany();
+    return await dbConnection.course.findMany({
+      include: {
+        questions: {
+          include: {
+            ansers: true
+          }
+        },
+        
+      }
+    });
   }
 
   public async delete(id: string): Promise<void>{
@@ -40,5 +49,17 @@ export default class CourseRepository {
         id: id
       }
     });
+  }
+  
+  public async getCourseByQuestionId(questionId: string): Promise<Course | null> {
+    return await dbConnection.course.findFirst({
+      where: {
+        questions: {
+          some: {
+            id: questionId
+          }
+        }
+      }
+    })
   }
 }

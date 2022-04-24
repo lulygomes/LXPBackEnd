@@ -3,7 +3,6 @@ import dbConnection from "./dbConnection";
 
 export default class QuestionRepository {
   public async create(questionData: Question): Promise<Question> {
-    console.log(questionData);
     const question = await dbConnection.question.create({
       data: {
         text: questionData.text,

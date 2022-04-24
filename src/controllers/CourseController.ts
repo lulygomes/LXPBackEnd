@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import { UserTypes } from '../models/enums/UserTypes';
 import CourseRepository from '../repository/CourseRepository';
-// import QuestionRepository from '../repository/QuestionRepository';
+import CreateAnswerService from '../services/CreateAnswerService';
 import CreateCourseService from '../services/CreateCourseService';
 import CreateQuestionService from '../services/CreateQuestionService';
 import UpdateCourseService from '../services/UpdateCourseService';
@@ -86,9 +86,10 @@ export default class CourseController {
       const createQuestionService = new CreateQuestionService();
       const { text, courseId } = req.body;
       const userAuth = req.user;
-      await createQuestionService.execute({text, courseId, studentId: userAuth.id});
 
-      return res.status(200).send();
+      const question = await createQuestionService.execute({text, courseId, studentId: userAuth.id});
+
+      return res.status(200).send(question);
     } catch (error) {
       console.log(error)
       return res.status(400).json({ error: error.message });
@@ -96,13 +97,17 @@ export default class CourseController {
   }
 
   public async addAnswer(req: Request, res: Response): Promise<Response> {
-    try {
-      const createQuestionService = new CreateQuestionService();
-      const { text, courseId } = req.params
-      const userAuth = req.user
-      await createQuestionService.execute({text, courseId, studentId: userAuth.id});
+    const userAuth = req.user
+    if(userAuth.userType != UserTypes.Teacher)
+      return res.status(401).json({error: "Operação não autorizada"})
 
-      return res.status(200).send();
+    try {
+      const createanswerService = new CreateAnswerService();
+      const { text, questionId } = req.body;
+
+      const answer = await createanswerService.execute({text, questionId, teacherId: userAuth.id});
+
+      return res.status(200).send(answer);
     } catch (error) {
       console.log(error)
       return res.status(400).json({ error: error.message });
