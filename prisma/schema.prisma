@@ -39,12 +39,12 @@ model Course {
 
 model Question {
   id        String  @id @default(uuid())
+  studentId String
+  student   User    @relation(fields: [studentId], references: [id])
   courseId  String
   course    Course  @relation(fields: [courseId], references: [id])
-  studentId String  @unique
-  student   User    @relation(fields: [studentId], references: [id])
   text      String  @db.Text()
-  open      Boolean @default(false)
+  open      Boolean @default(true)
 
   ansers Answer[]
 

@@ -13,12 +13,11 @@ CREATE TABLE `courses` (
 -- CreateTable
 CREATE TABLE `questions` (
     `id` VARCHAR(191) NOT NULL,
-    `courseId` VARCHAR(191) NOT NULL,
     `studentId` VARCHAR(191) NOT NULL,
+    `courseId` VARCHAR(191) NOT NULL,
     `text` TEXT NOT NULL,
-    `open` BOOLEAN NOT NULL DEFAULT false,
+    `open` BOOLEAN NOT NULL DEFAULT true,
 
-    UNIQUE INDEX `questions_studentId_key`(`studentId`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
