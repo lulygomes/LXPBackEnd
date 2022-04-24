@@ -6,7 +6,7 @@ export default class Question {
   courseId: string;
   studentId: string;
   text: string;
-  open: boolean;
+  open?: boolean;
   
   student?: User;
   course?: Course;

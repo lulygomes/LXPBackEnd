@@ -1,7 +1,9 @@
 import { Request, Response } from 'express';
 import { UserTypes } from '../models/enums/UserTypes';
 import CourseRepository from '../repository/CourseRepository';
+// import QuestionRepository from '../repository/QuestionRepository';
 import CreateCourseService from '../services/CreateCourseService';
+import CreateQuestionService from '../services/CreateQuestionService';
 import UpdateCourseService from '../services/UpdateCourseService';
 
 export default class CourseController {
@@ -71,6 +73,34 @@ export default class CourseController {
       const courseRepository = new CourseRepository();
       const { id } = req.params
       await courseRepository.delete(id);
+
+      return res.status(200).send();
+    } catch (error) {
+      console.log(error)
+      return res.status(400).json({ error: error.message });
+    }
+  }
+  
+  public async addQuestion(req: Request, res: Response): Promise<Response> {
+    try {
+      const createQuestionService = new CreateQuestionService();
+      const { text, courseId } = req.body;
+      const userAuth = req.user;
+      await createQuestionService.execute({text, courseId, studentId: userAuth.id});
+
+      return res.status(200).send();
+    } catch (error) {
+      console.log(error)
+      return res.status(400).json({ error: error.message });
+    }
+  }
+
+  public async addAnswer(req: Request, res: Response): Promise<Response> {
+    try {
+      const createQuestionService = new CreateQuestionService();
+      const { text, courseId } = req.params
+      const userAuth = req.user
+      await createQuestionService.execute({text, courseId, studentId: userAuth.id});
 
       return res.status(200).send();
     } catch (error) {
