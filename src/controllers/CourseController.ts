@@ -6,9 +6,15 @@ import UpdateCourseService from '../services/UpdateCourseService';
 
 export default class CourseController {
   public async crate(req: Request, res: Response): Promise<Response> {
+    const userAuth = req.user;
+    if(userAuth.userType != UserTypes.Adm && userAuth.userType != UserTypes.Teacher) 
+      return res.status(401).json({status: "error", message: "Operação não autoriazada"})
+
     try {
       const createCourseService = new CreateCourseService();
       const {title, teacherId, durationInMinutes} = req.body;
+
+
       const course = await createCourseService.execute({ title, teacherId, durationInMinutes })
 
       return res.status(200).json(course);
@@ -19,18 +25,23 @@ export default class CourseController {
   }
 
   public async update(req: Request, res: Response): Promise<Response> {
+    const userAuth = req.user;
+    if(userAuth.userType != UserTypes.Adm && userAuth.userType != UserTypes.Teacher) 
+      return res.status(401).json({status: "error", message: "Operação não autoriazada"})
+
     try {
       const updateCourseService = new UpdateCourseService();
       const { title, teacherId, durationInMinutes} = req.body;
-      const { id } = req.params
+      const { id } = req.params;
 
-      const courseUpdated = await updateCourseService.execute({ 
+      const courseDataToUpdate = {
         id,
         title, 
         teacherId, 
         durationInMinutes, 
-        userAuth: { userType: UserTypes.Teacher} 
-      })
+      }
+
+      const courseUpdated = await updateCourseService.execute(courseDataToUpdate)
 
       return res.status(200).json(courseUpdated);
     } catch (error) {
@@ -52,10 +63,14 @@ export default class CourseController {
   }
 
   public async delete(req: Request, res: Response): Promise<Response> {
+    const userAuth = req.user;
+    if(userAuth.userType != UserTypes.Adm && userAuth.userType != UserTypes.Teacher) 
+      return res.status(401).json({status: "error", message: "Operação não autoriazada"})
+  
     try {
       const courseRepository = new CourseRepository();
       const { id } = req.params
-      const courses = await courseRepository.delete(id);
+      await courseRepository.delete(id);
 
       return res.status(200).send();
     } catch (error) {

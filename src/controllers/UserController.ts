@@ -4,6 +4,7 @@ import UserRepository from '../repository/UserRepository';
 import CreateUserService from '../services/CreateUserService';
 import UpdateUserSerice from '../services/UpdateUserService';
 
+
 export default class UserController {
   
   public async create(req: Request, res: Response): Promise<Response> {
@@ -24,11 +25,19 @@ export default class UserController {
   public async update(req: Request, res: Response): Promise<Response> {
     try {
       const updateUserService = new UpdateUserSerice();
-      const { name, email, password, userType} = req.body;
+      const { name, email, userType} = req.body;
       const { id } = req.params
+      const userAuth = req.user;
+
+      const userDataUptade = {
+        id,
+        name,
+        email,
+        userType
+      }
       
-      const user = await updateUserService.execute(id, {name, email, password, userType})
-      
+      const user = await updateUserService.execute(userAuth, userDataUptade)
+
       return res.status(200).json(user);
     }catch (error){
       return res.status(400).json(error);
@@ -48,9 +57,14 @@ export default class UserController {
   }
 
   public async delete(req: Request, res: Response): Promise<Response> {
+    const userAuth = req.user;
+    const { id } = req.params
+
+    if((userAuth.userType === UserTypes.Student || userAuth.userType === UserTypes.Teacher) && userAuth.id != id)
+      return res.status(401).json({status: "error", message: "Operação não autoriazada"})
+    
     try {
       const userRepository = new UserRepository();
-      const { id } = req.params
 
       await userRepository.deleteUserById(id)
       return res.status(200).send();

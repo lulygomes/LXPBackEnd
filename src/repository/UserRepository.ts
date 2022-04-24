@@ -12,6 +12,13 @@ interface UserOut {
   updated_at?: Date;
 }
 
+interface IUserDataToUpdade {
+  id: string,
+  name: string,
+  email: string,
+  userType: UserTypes
+}
+
 export default class UserRepository {
   public async createUser(userData: User): Promise<User> {
     const newUser = await dbConnection.user.create({
@@ -59,12 +66,12 @@ export default class UserRepository {
     return userFormated;
   }
 
-  public async updateUserById(userId: string, userData: User): Promise<User>{
+  public async updateUserById(userDataToUpdade: IUserDataToUpdade): Promise<User>{
     const userUpdated = await dbConnection.user.update({
       where: {
-        id: userId
+        id: userDataToUpdade.id
       },
-      data: userData
+      data: userDataToUpdade
     })
     
     const userFormated: User  = {
