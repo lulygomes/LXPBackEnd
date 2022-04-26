@@ -56,7 +56,7 @@ export default class AuthenticateService {
       }}
       
     } catch (error) {
-      console.log("erro database", error.message)
+
       throw new AppError(error)
     }
   }

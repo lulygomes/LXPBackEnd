@@ -47,7 +47,6 @@ export default class CourseController {
 
       return res.status(200).json(courseUpdated);
     } catch (error) {
-      console.log(error)
       return res.status(400).json({ error: error.message });
     }
   }
@@ -64,7 +63,6 @@ export default class CourseController {
 
       return res.status(200).json(courses);
     } catch (error) {
-      console.log(error)
       return res.status(400).json({ error: error.message });
     }
   }
@@ -81,7 +79,6 @@ export default class CourseController {
 
       return res.status(200).send();
     } catch (error) {
-      console.log(error)
       return res.status(400).json({ error: error.message });
     }
   }
@@ -96,7 +93,6 @@ export default class CourseController {
 
       return res.status(200).send(question);
     } catch (error) {
-      console.log(error)
       return res.status(400).json({ error: error.message });
     }
   }
