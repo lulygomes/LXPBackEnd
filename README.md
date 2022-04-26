@@ -17,7 +17,11 @@ yarn
 Adicione a string de conexão no arquivo ./.env, verificar o modelo de string no aquivo ./.env.example
 
 
-Execute o 
+Agora crie o banco de dados com o PrismaIo
 ```bash
 yarn prisma migrate dev
+```
+Inicie o projeto
+```bash
+yarn dev
 ```
