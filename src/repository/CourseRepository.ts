@@ -39,7 +39,7 @@ export default class CourseRepository {
       include: {
         questions: {
           include: {
-            ansers: true,
+            answers: true,
             student: {
               select: {
                 id: true,
@@ -103,7 +103,7 @@ export default class CourseRepository {
       include: {
         questions: {
           include: {
-            ansers: true,
+            answers: true,
             student: {
               select: {
                 id: true,

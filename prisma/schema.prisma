@@ -46,7 +46,7 @@ model Question {
   text      String  @db.Text()
   open      Boolean @default(true)
 
-  ansers Answer[]
+  answers Answer[]
 
   @@map("questions")
 }
