@@ -8,14 +8,14 @@ export default class TeacherController {
   public async create(req: Request, res: Response): Promise<Response> {
     try {
       const createUserService = new CreateUserService();
-      const userAuth = req.user;
+      // const userAuth = req.user;
       const { name, email, password } = req.body;
 
       if (!name || !email || !password)
         return res.status(400).json({err: "Dados inválidos."})
 
-      if (userAuth.userType === UserTypes.Student)
-        return res.status(401).json({err: "Operação não autoriazada."})
+      // if (userAuth.userType === UserTypes.Student)
+      //   return res.status(401).json({err: "Operação não autoriazada."})
 
       const userType = UserTypes.Teacher
       await createUserService.execute({name, email, password, userType});
