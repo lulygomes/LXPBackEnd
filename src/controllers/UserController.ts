@@ -11,14 +11,16 @@ export default class UserController {
     try {
       const createUserService = new CreateUserService();
 
-      const { name, email, password, userType } = req.body;
-      userType.to
-      userType.toString()
-      const user = await createUserService.execute({name, email, password, userType: userType as UserTypes});
+      const { name, email, password } = req.body;
+
+      if (!name || !email || !password)
+        return res.status(400).json({err: "Dados inválidos."})
+
+      await createUserService.execute({name, email, password});
       
-      return res.status(200).json(user);
-    } catch(e) {
-      return res.status(400).json(e);
+      return res.status(200).send();
+    } catch(error) {
+      return res.status(400).json({err: error.message});
     }
   }
 

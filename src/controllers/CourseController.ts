@@ -55,7 +55,12 @@ export default class CourseController {
   public async list(req: Request, res: Response): Promise<Response> {
     try {
       const courseRepository = new CourseRepository();
-      const courses = await courseRepository.getAllCourses();
+      const query = req.query;
+
+      const offset: number = !!query.offset ? parseInt(query.offset as string) : 0
+      const take: number = !!query.take ? parseInt(query.take as string) : 5
+
+      const courses = await courseRepository.getAllCourses(offset, take);
 
       return res.status(200).json(courses);
     } catch (error) {
@@ -109,7 +114,6 @@ export default class CourseController {
 
       return res.status(200).send(answer);
     } catch (error) {
-      console.log(error)
       return res.status(400).json({ error: error.message });
     }
   }

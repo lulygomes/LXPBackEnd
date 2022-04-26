@@ -2,23 +2,39 @@ import { hash } from 'bcrypt';
 import AppError from '../errors/AppError';
 import User from "../models/User";
 import UserRepository from "../repository/UserRepository";
+import {UserTypes} from '../models/enums/UserTypes';
+
+interface UserDTO {
+  name: string;
+  email: string;
+  password: string;
+}
+
+interface UserDTOOut {
+  name: string;
+  email: string;
+}
 
 export default class CreateUserService {
-  public async execute({name, email, password, userType}: User): Promise<User> {
+  public async execute({name, email, password }: UserDTO): Promise<UserDTOOut> {
     const userRepository = new UserRepository();
 
     const userExist = await userRepository.findUserByEmail(email);
-    if(userExist) throw new AppError("Falha ao criar o usuário");
+    if(userExist) throw new AppError("Falha ao criar o usuário, entre com um email válido.");
 
     const passwordHash = await hash(password, 8);
 
-    const user = userRepository.createUser({
+    const userType = UserTypes.Student
+    const user = await userRepository.createUser({
       name, 
       email, 
       password: passwordHash, 
-      userType
+      userType,
     });
     
-    return user;
+    return {
+      name: user.name,
+      email: user.email
+    };
   }
 }

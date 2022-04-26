@@ -5,8 +5,10 @@ enum UserTypes {
 }
 declare namespace Express {
   interface Request {
+    token: string,
     user: {
       id: string,
+      name: string,
       userType: UserTypes,
     };
   }

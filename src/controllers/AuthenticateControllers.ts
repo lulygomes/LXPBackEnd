@@ -14,4 +14,14 @@ export default class AuthenticateController {
       return res.status(401).json({err: error.message})
     }
   }
+  public async refresh(req: Request, res: Response ): Promise<Response>{
+    try {
+      const user = req.user;
+      const token = req.token;
+
+      return res.status(200).json({token, user});
+    } catch (error) {
+      return res.status(401).json({err: error.message})
+    }
+  }
 }

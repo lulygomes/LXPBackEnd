@@ -1,4 +1,5 @@
 import express, { NextFunction, Request, response, Response } from 'express';
+import cors from 'cors'
 import { Router } from 'express';
 import AppError from './errors/AppError';
 
@@ -8,6 +9,7 @@ const app = express();
 
 const route = Router()
 
+app.use(cors())
 app.use(express.json())
 
 route.use('/', Routes);
@@ -16,11 +18,10 @@ app.use(route)
 
 app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
   if(err instanceof AppError)
-    return res.status(err.statusCode).json({message: err.message})
+    return res.status(err.statusCode).json({error: err.message})
 
   return response.status(500).json({
-    status: "error",
-    message: `Internal server error - ${err.message}`
+    error: `Internal server error - ${err.message}`
   })
 })
 

@@ -14,6 +14,7 @@ interface IResponse {
   token: string,
   user: {
     id: string | undefined,
+    name: string,
     email: string,
     userType: UserTypes
   }
@@ -23,6 +24,8 @@ export default class AuthenticateService {
   public async execute({email, password}: IRequest): Promise<IResponse> {
     const userRepository = new UserRepository();
 
+    try {
+      
     const user = await userRepository.findUserByEmail(email);
     if(!user) throw new AppError('Usuário ou senha inválido', 401);
 
@@ -32,6 +35,7 @@ export default class AuthenticateService {
     const token = sign({
       user: {
         id: user.id,
+        name: user.name,
         email: user.email,
         userType: user.userType,
       }
@@ -46,8 +50,14 @@ export default class AuthenticateService {
       token, 
       user: {
         id: user.id, 
+        name: user.name,
         email: user.email, 
         userType: user.userType
       }}
+      
+    } catch (error) {
+      console.log("erro database", error.message)
+      throw new AppError(error)
+    }
   }
 }

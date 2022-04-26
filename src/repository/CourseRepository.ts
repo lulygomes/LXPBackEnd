@@ -1,3 +1,4 @@
+import CoursesOutDTO from "../dto/CoursesOutDTO";
 import Course from "../models/Course";
 import dbConnection from "./dbConnection";
 
@@ -30,17 +31,41 @@ export default class CourseRepository {
     return courseUpdated;
   }
 
-  public async getAllCourses(): Promise<Course[]>{
-    return await dbConnection.course.findMany({
+  public async getAllCourses(offset = 0, take = 5): Promise<CoursesOutDTO>{
+    const total = await dbConnection.course.count()
+    const courses = await dbConnection.course.findMany({
+      skip: offset,
+      take,
       include: {
         questions: {
           include: {
-            ansers: true
+            ansers: true,
+            student: {
+              select: {
+                id: true,
+                name: true
+              }
+            }
           }
         },
-        
+        teacher: {
+          select: {
+            id: true,
+            name: true,
+          }
+        }
+      },
+      orderBy: {
+        title: 'asc'
       }
     });
+
+    return {
+      total,
+      offset,
+      take,
+      courses
+    }
   }
 
   public async delete(id: string): Promise<void>{
@@ -61,5 +86,43 @@ export default class CourseRepository {
         }
       }
     })
+  }
+
+  public async getCoursesByTeacherId(id: string, offset = 0, take = 5): Promise<CoursesOutDTO> {
+    const total = await dbConnection.course.count({
+      where: {
+        teacherId: id
+      }
+    })
+    const courses =  await dbConnection.course.findMany({
+      skip: offset,
+      take,
+      where: {
+        teacherId: id
+      },
+      include: {
+        questions: {
+          include: {
+            ansers: true
+          }
+        },
+        teacher: {
+          select: {
+            id: true,
+            name: true,
+          }
+        }
+      },
+      orderBy: {
+        title: 'asc'
+      }
+    })
+
+    return {
+      total,
+      offset,
+      take,
+      courses
+    }
   }
 }

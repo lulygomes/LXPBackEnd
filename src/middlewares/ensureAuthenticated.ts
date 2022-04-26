@@ -8,6 +8,7 @@ import { UserTypes } from '../models/enums/UserTypes';
 interface TokenPayload {
   user: {
     id: string,
+    name: string,
     email: string,
     userType: UserTypes
   }
@@ -33,6 +34,7 @@ export default function ensureAuthenticated(
     const { user } = decoded as TokenPayload;
 
     request.user = user
+    request.token = token
 
     return next();
   } catch {

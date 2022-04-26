@@ -12,6 +12,7 @@ interface UserOut {
   updated_at?: Date;
 }
 
+
 interface IUserDataToUpdade {
   id: string,
   name: string,
@@ -21,6 +22,7 @@ interface IUserDataToUpdade {
 
 export default class UserRepository {
   public async createUser(userData: User): Promise<User> {
+    console.log('UserRepository CreateUser user -', userData)
     const newUser = await dbConnection.user.create({
       data: userData
     })
