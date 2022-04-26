@@ -17,7 +17,7 @@ export default class CourseController {
       const {title, teacherId, durationInMinutes} = req.body;
 
 
-      const course = await createCourseService.execute({ title, teacherId, durationInMinutes })
+      const course = await createCourseService.execute({ title, teacherId, durationInMinutes: parseInt(durationInMinutes) })
 
       return res.status(200).json(course);
     } catch (error) {

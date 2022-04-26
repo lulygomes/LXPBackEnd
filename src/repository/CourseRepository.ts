@@ -103,7 +103,13 @@ export default class CourseRepository {
       include: {
         questions: {
           include: {
-            ansers: true
+            ansers: true,
+            student: {
+              select: {
+                id: true,
+                name: true
+              }
+            }
           }
         },
         teacher: {

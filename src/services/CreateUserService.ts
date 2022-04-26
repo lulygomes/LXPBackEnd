@@ -8,6 +8,7 @@ interface UserDTO {
   name: string;
   email: string;
   password: string;
+  userType: UserTypes
 }
 
 interface UserDTOOut {
@@ -16,15 +17,13 @@ interface UserDTOOut {
 }
 
 export default class CreateUserService {
-  public async execute({name, email, password }: UserDTO): Promise<UserDTOOut> {
+  public async execute({name, email, password, userType }: UserDTO): Promise<UserDTOOut> {
     const userRepository = new UserRepository();
 
     const userExist = await userRepository.findUserByEmail(email);
     if(userExist) throw new AppError("Falha ao criar o usuário, entre com um email válido.");
 
     const passwordHash = await hash(password, 8);
-
-    const userType = UserTypes.Student
     const user = await userRepository.createUser({
       name, 
       email, 

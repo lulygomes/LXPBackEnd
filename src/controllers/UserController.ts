@@ -16,7 +16,8 @@ export default class UserController {
       if (!name || !email || !password)
         return res.status(400).json({err: "Dados inválidos."})
 
-      await createUserService.execute({name, email, password});
+      const userType = UserTypes.Student
+      await createUserService.execute({name, email, password, userType});
       
       return res.status(200).send();
     } catch(error) {
